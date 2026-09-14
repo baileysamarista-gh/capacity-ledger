@@ -1,0 +1,830 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#102a3a" />
+  <title>Capacity Ledger — DAL ASR-AR Headcount Plan</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
+    :root { --ink:#102a3a; --blue:#1e4d68; --paper:#f4f0e8; --sheet:#fbf9f4; --rule:#ded8cc; --muted:#68737b; --amber:#c98a28; --green:#37795b; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font-family:Manrope,Arial,sans-serif; }
+    button,input { font:inherit; }
+    button { cursor:pointer; }
+    .app { min-height:100vh; display:grid; grid-template-columns:264px minmax(0,1fr); }
+    aside { position:sticky; top:0; height:100vh; display:flex; flex-direction:column; padding:26px 20px; background:var(--ink); color:#f7f3ea; }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .mark { position:relative; display:grid; place-items:center; width:42px; height:42px; border:2px solid #5a879d; }
+    .mark:after { content:""; width:16px; height:14px; border-left:4px solid #8ec5d8; border-bottom:4px solid #8ec5d8; box-shadow:6px -5px 0 -2px var(--amber); }
+    .brand strong,.display { font-family:Fraunces,Georgia,serif; }
+    .brand strong { display:block; font-size:20px; line-height:18px; letter-spacing:-.04em; }
+    .brand small,.eyebrow { display:block; margin-top:4px; font-size:9px; font-weight:800; letter-spacing:.27em; text-transform:uppercase; }
+    .brand small { color:#a9c2ce; }
+    nav { margin-top:55px; }
+    nav p { color:#83a1b1; font-size:10px; font-weight:800; letter-spacing:.19em; text-transform:uppercase; }
+    nav a { display:flex; gap:12px; align-items:center; margin-top:5px; padding:12px; color:#b9cdd5; text-decoration:none; font-size:14px; font-weight:700; border-radius:10px; cursor:pointer; }
+    nav a.active { color:#fff; background:rgba(255,255,255,.10); }
+    .status { margin-top:auto; padding:16px; border:1px solid rgba(255,255,255,.1); border-radius:16px; background:rgba(255,255,255,.06); }
+    .status p { margin:0; color:#b8cbd2; font-size:12px; line-height:19px; }
+    .status h3 { margin:12px 0 3px; font:500 21px/1 Fraunces,Georgia,serif; }
+    .meter { height:6px; margin-top:15px; border-radius:4px; background:rgba(255,255,255,.12); overflow:hidden; }
+    .meter i { display:block; height:100%; width:72%; border-radius:4px; background:#e0b663; }
+    main { min-width:0; padding-bottom:42px; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; padding:14px 40px; color:var(--muted); font-size:12px; font-weight:700; }
+    .topbar button { border:1px solid #d7d2c7; padding:10px 13px; background:var(--sheet); color:#53616a; font-size:10px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; }
+    .sheet { margin:0 40px; border:1px solid var(--rule); background:var(--sheet); }
+    .hero { display:grid; grid-template-columns:1.18fr .82fr; min-height:258px; }
+    .intro { padding:36px; }
+    .eyebrow { color:var(--blue); font-size:10px; letter-spacing:.18em; }
+    .eyebrow:before { content:""; display:inline-block; width:25px; height:5px; margin:0 10px 2px 0; background:var(--blue); }
+    h1 { max-width:570px; margin:18px 0 0; font:600 clamp(39px,4.2vw,59px)/.96 Fraunces,Georgia,serif; letter-spacing:-.07em; }
+    h1 em { color:var(--blue); font-style:normal; }
+    .intro > p { max-width:470px; margin:18px 0 23px; color:#53616a; font-size:14px; line-height:1.7; }
+    .buttons { display:flex; flex-wrap:wrap; gap:10px; }
+    .btn { display:inline-flex; align-items:center; gap:8px; padding:13px 15px; border:1px solid #c9c5bb; background:transparent; color:#53616a; font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; transition:.18s; }
+    .btn:hover { border-color:var(--blue); color:var(--blue); }
+    .btn.primary { border-color:var(--blue); background:var(--blue); color:#fff; box-shadow:0 12px 22px -14px rgba(30,77,104,.85); }
+    .btn:active,.topbar button:active { transform:scale(.97); }
+    .visual { position:relative; overflow:hidden; min-height:190px; border-left:1px solid var(--rule); background:linear-gradient(135deg,#efe9dd,#d8e0dd); }
+    .visual:before,.visual:after { content:""; position:absolute; border:1px solid rgba(30,77,104,.18); transform:rotate(-17deg); }
+    .visual:before { inset:-45px -85px 38px 57px; background:repeating-linear-gradient(0deg,rgba(30,77,104,.08) 0 1px,transparent 1px 20px); }
+    .visual:after { width:155px; height:275px; right:50px; top:-32px; background:linear-gradient(155deg,#f8f6ee 10%,#e1ded5 10% 13%,#f8f6ee 13%); box-shadow:25px 20px 0 rgba(16,42,58,.07); }
+    .health { position:absolute; z-index:1; right:34px; bottom:28px; width:min(320px,calc(100% - 46px)); padding:15px; border:1px solid #bfcfd0; background:rgba(248,245,238,.94); box-shadow:0 10px 20px rgba(16,42,58,.07); }
+    .health b { display:block; margin-top:4px; font:600 30px/1 Fraunces,Georgia,serif; letter-spacing:-.06em; }
+    .health span { display:block; margin-top:6px; color:var(--muted); font-size:12px; font-weight:700; }
+    .metrics { display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--rule); background:#fbf9f4; }
+    .metric { min-width:0; padding:19px 28px; border-right:1px solid var(--rule); }
+    .metric:last-child { border:0; }
+    .metric .label { color:var(--muted); font-size:10px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; }
+    .metric .label:before { content:"•"; margin-right:8px; color:var(--blue); font-size:16px; vertical-align:-1px; }
+    .metric.caution .label:before { color:var(--amber); }
+    .metric strong { display:block; margin-top:6px; font:600 28px/1 Fraunces,Georgia,serif; letter-spacing:-.06em; }
+    .metric small { display:block; margin-top:6px; color:var(--muted); font-size:11px; font-weight:600; }
+    .worktable { display:grid; grid-template-columns:328px minmax(0,1fr); gap:18px; margin:18px 40px 0; }
+    .panel { border:1px solid var(--rule); background:var(--sheet); }
+    .panel-head { display:flex; align-items:start; justify-content:space-between; gap:12px; padding:20px 22px; border-bottom:1px solid var(--rule); }
+    .panel h2 { margin:4px 0 0; font:600 25px/1 Fraunces,Georgia,serif; letter-spacing:-.05em; }
+    .assumptions { padding:5px 22px 23px; }
+    .assumptions label { display:block; padding:16px 0 12px; border-bottom:1px solid #c7c9c3; }
+    .assumptions label span { display:flex; justify-content:space-between; color:var(--muted); font-size:10px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+    .assumptions label div { display:flex; align-items:center; margin-top:5px; }
+    .assumptions label input { width:100%; min-width:0; border:0; outline:0; background:transparent; color:var(--ink); font:600 25px/1.25 Fraunces,Georgia,serif; letter-spacing:-.04em; }
+    .assumptions label b { color:var(--muted); font-size:11px; }
+    .filterbar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:14px; margin:14px 40px 0; padding:13px 18px; border:1px solid var(--rule); background:var(--sheet); }
+    .filterbar .fbLabel { color:var(--muted); font-size:10px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; margin-right:2px; }
+    .filterbar .fbNote { width:100%; color:var(--muted); font-size:11px; font-weight:600; }
+    .daterange { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .daterange label { display:inline-flex; align-items:center; gap:6px; color:#5a6870; font-size:11px; font-weight:700; }
+    .daterange input[type=date] { border:1px solid #c9c5bb; background:#fff; padding:6px 8px; font:600 12px Manrope,Arial,sans-serif; color:var(--ink); border-radius:3px; }
+    .daterange input[type=text] { border:1px solid #c9c5bb; background:#fff; padding:6px 8px; font:600 12px Manrope,Arial,sans-serif; color:var(--ink); border-radius:3px; min-width:240px; }
+    .linklike:disabled { color:#a7ada4; cursor:not-allowed; text-decoration:none; }
+    .autorefresh { display:inline-flex; align-items:center; gap:6px; color:#5a6870; font-size:11px; font-weight:700; }
+    .linklike { border:0; background:transparent; color:var(--blue); font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; text-decoration:underline; cursor:pointer; padding:2px 0; }
+    .viewtoggle { display:flex; border:1px solid #c9c5bb; border-radius:3px; overflow:hidden; }
+    .viewtoggle .gbtn { border:0; background:#fff; color:#5a6870; font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:7px 14px; cursor:pointer; }
+    .viewtoggle .gbtn.active { background:var(--blue); color:#fff; }
+    .viewtoggle .gbtn:not(.active):hover { background:#f0ece3; }
+    .note { padding:16px 22px; border-top:1px solid var(--rule); background:#f3efe6; color:#5e6a71; font-size:12px; line-height:1.5; }
+    .note b { color:var(--ink); }
+    .inherited { margin:0 22px 16px; padding:12px 14px; border:1px dashed #c7c9c3; background:#f7f4ec; font-size:11px; color:#5e6a71; }
+    .inherited b { display:block; margin-bottom:6px; color:var(--ink); font-size:10px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    .inherited div { display:flex; justify-content:space-between; padding:3px 0; }
+    .canvas { padding:20px 22px 22px; }
+    .source { display:inline-flex; align-items:center; gap:7px; margin:0 0 14px; padding:7px 9px; border:1px solid #d7d2c7; background:#f5f1e8; color:#5a6870; font-size:11px; font-weight:700; }
+    .chart-grid { display:grid; grid-template-columns:minmax(0,1fr) 205px; gap:18px; }
+    .legend { display:flex; flex-wrap:wrap; gap:13px; margin:0 0 8px; color:var(--muted); font-size:10px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; }
+    .legend i { display:inline-block; width:8px; height:8px; margin-right:5px; background:var(--blue); }
+    .legend i.green { border-radius:50%; background:var(--green); }
+    .legend i.amber { border-radius:50%; background:var(--amber); }
+    .chart-box { height:267px; }
+    canvas { display:block; width:100%; height:100%; }
+    .watch { padding:17px; border-left:4px solid var(--amber); background:#fbf3e5; }
+    .watch.good { border-color:var(--green); background:#edf5ee; }
+    .watch .result { display:flex; align-items:center; gap:8px; margin-top:15px; font:600 28px/1 Fraunces,Georgia,serif; letter-spacing:-.06em; }
+    .watch p { margin:3px 0 0; color:#53616a; font-size:12px; font-weight:700; }
+    .watch hr { margin:18px 0; border:0; border-top:1px solid #d8d7cd; }
+    .watch dl { display:grid; gap:12px; margin:0; font-size:12px; }
+    .watch dl div { display:flex; justify-content:space-between; gap:10px; }.watch dt { color:var(--muted); }.watch dd { margin:0; font-weight:800; }
+    .table { margin-top:20px; border:1px solid var(--rule); overflow:auto; }
+    .row { display:grid; grid-template-columns:1.2fr .75fr .75fr .75fr .6fr .75fr .6fr; min-width:0; padding:11px 10px; border-top:1px solid #e7e1d6; font-size:11px; }
+    .row.cols-8 { grid-template-columns:.95fr .62fr .78fr .72fr .78fr .62fr .62fr .62fr; column-gap:6px; }
+    .row.cols-8.header { align-items:end; font-size:9px; letter-spacing:.07em; line-height:1.3; }
+    .row.cols-8:not(.header) span:nth-child(3) { font-weight:600; }
+    .row.cols-8:not(.header) span:nth-child(4),.row.cols-8:not(.header) span:last-child { font-weight:800; color:var(--blue); }
+    .row.header { border:0; background:#f0ece3; color:var(--muted); font-size:10px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; }.row span:not(:first-child){text-align:right}.row:not(.header) span:first-child{font-weight:800}.row:not(.header) span:nth-child(3){font-weight:800}.gap{justify-self:end; min-width:51px; padding:3px 5px; text-align:center !important; font-size:11px; font-weight:800;}.gap.bad{background:#f8e4c5;color:#9a5a0e}.gap.good{background:#ddeDE0;color:#246446}
+    .method { display:grid; grid-template-columns:minmax(0,1fr) 360px; gap:18px; margin:18px 40px; }.method .panel { padding:24px 28px; }.method h2 { max-width:560px; font-size:29px; }.method .panel > p { max-width:620px; color:#5a6870; font-size:13px; line-height:1.7; }.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.step{padding:12px;border-top:2px solid var(--blue);background:rgba(255,255,255,.55);font-size:11px;line-height:1.5;color:#4e5e66}.step b{color:var(--blue)}.readout{background:var(--ink)!important;color:#f7f3ea}.readout .eyebrow{color:#a9c2ce}.readout div{padding:13px 0;border-bottom:1px solid rgba(255,255,255,.1)}.readout div:last-child{border:0}.readout small{color:#b8cbd2;font-size:12px}.readout strong{display:block;margin-top:4px;font:600 28px/1 Fraunces,Georgia,serif;letter-spacing:-.055em}.footer{display:flex;justify-content:space-between;gap:12px;margin:25px 40px 0;padding-top:15px;border-top:1px solid #d7d2c7;color:#7b8586;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+    @media(max-width:900px){.app{grid-template-columns:1fr}aside{display:none}.topbar,.sheet,.worktable,.method,.footer,.filterbar{margin-left:18px;margin-right:18px}.topbar{padding:14px 18px}.hero{grid-template-columns:1fr}.visual{border:0;border-top:1px solid var(--rule)}.metrics{grid-template-columns:repeat(2,1fr)}.metric:nth-child(2){border-right:0}.metric:nth-child(-n+2){border-bottom:1px solid var(--rule)}.worktable,.method{grid-template-columns:1fr}.chart-grid{grid-template-columns:1fr}.watch{order:-1}.steps{grid-template-columns:1fr}}
+    @media(max-width:480px){.intro{padding:28px 22px}.topbar{font-size:10px}.topbar span{display:none}.metric{padding:15px 14px}.metric strong{font-size:24px}.panel-head,.canvas,.method .panel{padding-left:18px;padding-right:18px}.assumptions,.note{padding-left:18px;padding-right:18px}.footer{font-size:8px}.health{right:18px;bottom:18px}}
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <div class="brand"><span class="mark" aria-hidden="true"></span><div><strong>Capacity</strong><small>Ledger</small></div></div>
+      <nav><p>Workspace</p><a data-view="capacity" class="active">▦&nbsp; Cases capacity</a><a data-view="staffing">⌁&nbsp; Staffing forecast</a></nav>
+      <div class="status"><small>✦&nbsp; Plan status</small><h3 id="statusTitle">—</h3><p id="statusCopy">—</p><div class="meter"><i id="statusMeter"></i></div></div>
+    </aside>
+    <main>
+
+    <!-- ============================= PAGE 1 — CASES CAPACITY ============================= -->
+    <section id="view-capacity" class="view">
+      <div class="topbar"><span>▣ &nbsp; DAL ASR-AR capacity plan &nbsp; / &nbsp; Cases capacity view</span><button id="reset">↻ &nbsp; Reset plan</button></div>
+      <section class="sheet">
+        <div class="hero">
+          <div class="intro"><span class="eyebrow">Labeller / Checker capacity</span><h1>See what your current <em>headcount</em> can process.</h1><p>Upload the daily capacity plan and Capacity Ledger converts Active, Production, and Nesting Headcount into realistic Labeller and Checker case-processing capacity — no demand forecast required.</p><div class="buttons"><button class="btn primary" id="upload">⇧ &nbsp; Upload capacity plan</button><button class="btn" id="template">⇩ &nbsp; CSV template</button><input id="file" type="file" accept=".csv,text/csv,.xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" hidden /></div></div>
+          <div class="visual"><div class="health"><span class="eyebrow">Case capacity</span><b id="heroCapacity">0</b><span id="heroCopy">effective cases / day</span></div></div>
+        </div>
+        <div class="metrics">
+          <div class="metric"><span class="label">Active Headcount</span><strong id="avgActiveHC">0.0</strong><small>avg scheduled roster</small></div>
+          <div class="metric"><span class="label">Effective Headcount</span><strong id="avgEffectiveHC">0.0</strong><small>production-ready, after ramp &amp; shrinkage</small></div>
+          <div class="metric caution"><span class="label">Headcount Utilization</span><strong id="avgUtilization">0%</strong><small>effective ÷ active</small></div>
+          <div class="metric"><span class="label">Total Case Capacity</span><strong id="avgTotalCases">0</strong><small>Labeller + Checker / day</small></div>
+        </div>
+      </section>
+      <div class="filterbar">
+        <div class="daterange"><span class="fbLabel">Date range</span><label>From <input type="date" id="dateFrom"></label><label>To <input type="date" id="dateTo"></label><button type="button" id="clearRange" class="linklike">Clear</button></div>
+        <div class="viewtoggle"><button type="button" class="gbtn active" data-granularity="daily">Daily</button><button type="button" class="gbtn" data-granularity="weekly">Weekly</button></div>
+        <span id="granularityNote" class="fbNote" hidden>Weekly view — Headcount columns are period averages; Labeller/Checker/Total are period totals.</span>
+      </div>
+      <div class="filterbar" id="sheetbar">
+        <div class="daterange">
+          <span class="fbLabel">Google Sheet</span>
+          <button type="button" id="googleSignIn" class="linklike">Sign in with Google</button>
+          <input type="text" id="sheetUrl" placeholder="Paste Google Sheet URL">
+          <button type="button" id="loadSheet" class="linklike" disabled>Load</button>
+        </div>
+        <label class="autorefresh"><input type="checkbox" id="autoRefresh" disabled> Auto-refresh every 5 min</label>
+        <span id="sheetStatus" class="fbNote">Not signed in — click "Sign in with Google" to connect a private sheet live.</span>
+      </div>
+      <section class="worktable">
+        <article class="panel"><div class="panel-head"><div><span class="eyebrow">Assumption workbench</span><h2>The capacity levers</h2></div><span>☷</span></div><div class="assumptions">
+          <label><span>Labeller workload split <b>%</b></span><div><input id="labellerPct" type="number" min="0" max="100" step="1" value="49"><b>%</b></div></label>
+          <label><span>Labeller eff. hrs per 8 workload hrs <b>hr</b></span><div><input id="labellerRatio" type="number" min="0" step=".1" value="0.4"><b>hr</b></div></label>
+          <label><span>Checker eff. hrs per 8 workload hrs <b>hr</b></span><div><input id="checkerRatio" type="number" min="0" step=".1" value="0.8"><b>hr</b></div></label>
+          <label><span>Effective seconds per case <b>sec</b></span><div><input id="secPerCase" type="number" min="1" step="1" value="20"><b>sec</b></div></label>
+          <label><span>Nesting ramp productivity <b>%</b></span><div><input id="rampPct" type="number" min="0" max="100" step="5" value="0"><b>%</b></div></label>
+          <label><span>Attrition / shrinkage buffer <b>%</b></span><div><input id="shrinkage" type="number" min="0" max="95" step="1" value="0"><b>%</b></div></label>
+          <label><span>Utilization override <b>%</b></span><div><input id="utilOverride" type="number" min="0" max="100" step="1" placeholder="auto"><b>%</b></div></label>
+          <label><span>Default active headcount <b>HC</b></span><div><input id="fallbackHC" type="number" min="0" step="1" value="10"><b>HC</b></div></label>
+        </div><div class="note">ⓘ &nbsp; <b id="assumptionCopy">Labeller effective hours = workload hours × Labeller % × (ratio ÷ 8).</b> Leave Utilization override blank to derive it from ramp + shrinkage, or type a number to force every day to that utilization.</div></article>
+        <article class="panel"><div class="panel-head"><div><span class="eyebrow">Case capacity canvas</span><h2>Headcount converted to Labeller and Checker case capacity</h2></div></div><div class="canvas"><span class="source">▧ &nbsp; <span id="fileName">DAL Capacity Planv2 — Capacity-AR.csv</span></span><div class="chart-grid"><div><div class="legend"><span><i></i> Total capacity</span><span><i class="amber"></i> Labeller cases</span><span><i class="green"></i> Checker cases</span></div><div class="chart-box"><canvas id="chart"></canvas></div></div><div class="watch" id="watch"><span class="eyebrow" id="watchLabel">Lowest capacity day</span><div class="result" id="watchResult">0 cases</div><p id="watchAt">lowest total capacity at —</p><hr><dl><div><dt>Nesting HC</dt><dd id="watchNestingHC">0.0</dd></div><div><dt>Production HC</dt><dd id="watchProductionHC">0.0</dd></div><div><dt>Active HC (Nesting+Prod.)</dt><dd id="watchActiveHC">0.0</dd></div><div><dt>Effective HC</dt><dd id="watchEffectiveHC">0.0</dd></div><div><dt>Utilization</dt><dd id="watchUtilization">0%</dd></div><div><dt>Labeller cases</dt><dd id="watchLabellerCases">0</dd></div><div><dt>Checker cases</dt><dd id="watchCheckerCases">0</dd></div><div><dt>Total cases</dt><dd id="watchTotalCases">0</dd></div></dl></div></div><div class="table"><div class="row header cols-8"><span>Period</span><span>Nesting</span><span>Production</span><span>Active HC</span><span>Effective HC</span><span>Labeller</span><span>Checker</span><span>Total</span></div><div id="rows"></div></div></div></article>
+      </section>
+      <section class="method"><article class="panel"><span class="eyebrow">Transparent method</span><h2>Every case-capacity number has a visible driver.</h2><p>Capacity Ledger splits Total Workload Hours between Labeller and Checker using the Labeller Workload % column, converts each share to Effective Hours Capacity with its own hours ratio, turns that into case capacity, then scales the result by how much of the headcount (Nesting + Production) is actually production-ready.</p><div class="steps"><div class="step"><b>01</b><br>Total workload hours × Labeller Workload % (and its complement) splits time between Labeller and Checker.</div><div class="step"><b>02</b><br>Workload hours × the effective-hours ratio (Labeller 0.4:8, Checker 0.8:8) gives Effective Hours Capacity.</div><div class="step"><b>03</b><br>Effective hours × 3600 ÷ effective seconds/case gives case capacity, scaled by Effective ÷ Active Headcount (utilization).</div></div></article><article class="panel readout"><span class="eyebrow">◌ &nbsp; Calculation readout</span><div><small>Total case capacity</small><strong id="capTotal">0</strong></div><div><small>Avg. effective headcount</small><strong id="capAvgEffective">0.0 HC</strong></div><div><small>Cases per headcount</small><strong id="capCasesPerHC">0.0</strong></div></article></section>
+      <footer class="footer"><span>Capacity Ledger · ASR-AR case capacity model</span><span id="capFooterCount">0 periods evaluated</span></footer>
+    </section>
+
+    <!-- ============================= PAGE 2 — STAFFING FORECAST ============================= -->
+    <section id="view-staffing" class="view" hidden>
+      <div class="topbar"><span>▣ &nbsp; DAL ASR-AR staffing forecast &nbsp; / &nbsp; Scheduled vs required HC</span><button id="resetForecast">↻ &nbsp; Reset forecast</button></div>
+      <section class="sheet">
+        <div class="hero">
+          <div class="intro"><span class="eyebrow">Forecast-driven staffing</span><h1>Turn forecasted <em>cases</em> into a staffing plan.</h1><p>Upload a daily case forecast and Capacity Ledger converts it into Required Headcount based on the Labeller workload, then checks it against the Scheduled and Actual headcount from the capacity plan.</p><div class="buttons"><button class="btn primary" id="uploadForecast">⇧ &nbsp; Upload cases forecast</button><button class="btn" id="templateForecast">⇩ &nbsp; CSV template</button><input id="fileForecast" type="file" accept=".csv,text/csv,.xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" hidden /></div></div>
+          <div class="visual"><div class="health"><span class="eyebrow">Staffing health</span><b id="heroGapStaffing">0.0 HC</b><span id="heroCopyStaffing">average shortfall</span></div></div>
+        </div>
+        <div class="metrics">
+          <div class="metric"><span class="label">Forecast Cases</span><strong id="totalForecastCases">0</strong><small id="forecastCount">0 forecast records</small></div>
+          <div class="metric"><span class="label">Average Required HC</span><strong id="avgRequiredHC">0.0</strong><small>modeled from forecast</small></div>
+          <div class="metric caution"><span class="label">Scheduled Δ</span><strong id="scheduledVarianceStaffing">0.0</strong><small>HC vs required</small></div>
+          <div class="metric caution"><span class="label">Actual Δ</span><strong id="actualVarianceStaffing">0.0</strong><small>HC vs required</small></div>
+        </div>
+      </section>
+      <section class="worktable">
+        <article class="panel"><div class="panel-head"><div><span class="eyebrow">Forecast workbench</span><h2>The demand levers</h2></div><span>☷</span></div><div class="assumptions">
+          <label><span>Work hours per HC per day <b>hr</b></span><div><input id="hoursPerHC2" type="number" min=".05" step=".5" value="3"><b>hr</b></div></label>
+          <label><span>Effective seconds per case <b>sec</b></span><div><input id="secPerCase2" type="number" min="1" step="1" value="20"><b>sec</b></div></label>
+          <label><span>Labeller case share <b>%</b></span><div><input id="labellerShare2" type="number" min="0" max="100" step="1" value="32"><b>%</b></div></label>
+          <label><span>Nesting ramp productivity <b>%</b></span><div><input id="rampPct2" type="number" min="0" max="100" step="5" value="0"><b>%</b></div></label>
+          <label><span>Attrition / shrinkage buffer <b>%</b></span><div><input id="shrinkage2" type="number" min="0" max="95" step="1" value="0"><b>%</b></div></label>
+          <label><span>Default headcount (unmatched dates) <b>HC</b></span><div><input id="fallbackHC2" type="number" min="0" step="1" value="10"><b>HC</b></div></label>
+        </div><div class="note">ⓘ &nbsp; <b id="assumptionCopyStaffing">Required HC = (Labeller + Checker forecast hours) ÷ work hours per HC.</b> Labeller case share only applies when your forecast has a single Total Cases column instead of separate Labeller/Checker columns.</div></article>
+        <article class="panel"><div class="panel-head"><div><span class="eyebrow">Staffing coverage canvas</span><h2>Forecast demand against scheduled and actual headcount</h2></div></div><div class="canvas"><span class="source">▧ &nbsp; <span id="fileNameForecast">Illustrative forecast — upload to replace</span></span><div class="chart-grid"><div><div class="legend"><span><i></i> Required HC</span><span><i style="background:#c98a28"></i> Scheduled HC</span><span><i class="green"></i> Actual HC</span></div><div class="chart-box"><canvas id="chartStaffing"></canvas></div></div><div class="watch" id="watchStaffing"><span class="eyebrow" id="watchLabelStaffing">Actual exposure watch</span><div class="result" id="watchResultStaffing">⚠ 0.0 HC</div><p id="watchAtStaffing">short at —</p><hr><dl><div><dt>Required</dt><dd id="watchRequired">0.0 HC</dd></div><div><dt>Scheduled</dt><dd id="watchScheduled">0.0 HC</dd></div><div><dt>Scheduled Δ</dt><dd id="watchScheduledVariance">0.0</dd></div><div><dt>Actual</dt><dd id="watchActual">0.0 HC</dd></div><div><dt>Actual Δ</dt><dd id="watchActualVariance">0.0</dd></div></dl></div></div><div class="table"><div class="row header"><span>Period</span><span>Forecast</span><span>Req.</span><span>Sched.</span><span>S. Δ</span><span>Actual</span><span>A. Δ</span></div><div id="rowsStaffing"></div></div></div></article>
+      </section>
+      <section class="method"><article class="panel"><span class="eyebrow">Transparent method</span><h2>Every staffing number has a visible driver.</h2><p>Capacity Ledger converts your forecasted Labeller and Checker cases into required hours, then required headcount — and checks it against the Active and Production headcount already on the capacity plan.</p><div class="steps"><div class="step"><b>01</b><br>Forecasted cases × effective seconds/case ÷ 3600 gives required hours.</div><div class="step"><b>02</b><br>Required hours ÷ work hours per HC/day = Required Headcount.</div><div class="step"><b>03</b><br>Required Headcount is checked against Scheduled (Active) and Actual (Production + ramped Nesting) Headcount from the capacity plan.</div></div></article><article class="panel readout"><span class="eyebrow">◌ &nbsp; Calculation readout</span><div><small>Total forecast cases</small><strong id="fcTotalCases">0</strong></div><div><small>Avg. required / scheduled HC</small><strong id="fcReqSched">0.0 / 0.0 HC</strong></div><div><small>Planning signal</small><strong id="fcSignal">Rebalance</strong></div></article></section>
+      <footer class="footer"><span>Capacity Ledger · ASR-AR staffing forecast model</span><span id="fcFooterCount">0 periods evaluated</span></footer>
+    </section>
+
+    </main>
+  </div>
+  <script>
+    // Embedded capacity-plan source — parsed with the same CSV reader used for uploads.
+    const DEFAULT_CSV = `Monthh,Week,Date,Day,Project,Nesting Headcount,Production Headcount,Active Headcount (Labeller-Checker),Work Hours per HC per Day,Total workload hours,Labeller Workload %,Labeller Effective hours capacity,Checker Effective hours capacity,Labeller Cases,Checker Cases,,
+08/01/2026,8/31/2026,8/31/2026,Mon,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,8/31/2026,09/01/2026,Tue,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,8/31/2026,09/02/2026,Wed,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,8/31/2026,09/03/2026,Thu,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,8/31/2026,09/04/2026,Fri,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,8/31/2026,09/05/2026,Sat,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,8/31/2026,09/06/2026,Sun,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,09/07/2026,09/07/2026,Mon,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,6
+09/01/2026,09/07/2026,09/08/2026,Tue,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,09/07/2026,09/09/2026,Wed,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,09/07/2026,09/10/2026,Thu,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,09/07/2026,09/11/2026,Fri,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,09/07/2026,09/12/2026,Sat,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,09/07/2026,9/13/2026,Sun,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,9/14/2026,9/14/2026,Mon,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,9/14/2026,9/15/2026,Tue,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,9/14/2026,9/16/2026,Wed,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,9/14/2026,9/17/2026,Thu,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,9/14/2026,9/18/2026,Fri,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,9/14/2026,9/19/2026,Sat,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,9/14/2026,9/20/2026,Sun,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,9/21/2026,9/21/2026,Mon,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,9/21/2026,9/22/2026,Tue,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,9/21/2026,9/23/2026,Wed,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,9/21/2026,9/24/2026,Thu,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,9/21/2026,9/25/2026,Fri,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,9/21/2026,9/26/2026,Sat,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,9/21/2026,9/27/2026,Sun,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,9/28/2026,9/28/2026,Mon,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,9/28/2026,9/29/2026,Tue,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+09/01/2026,9/28/2026,9/30/2026,Wed,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,9/28/2026,10/01/2026,Thu,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,9/28/2026,10/02/2026,Fri,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,9/28/2026,10/03/2026,Sat,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,9/28/2026,10/04/2026,Sun,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/05/2026,10/05/2026,Mon,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/05/2026,10/06/2026,Tue,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/05/2026,10/07/2026,Wed,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/05/2026,10/08/2026,Thu,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/05/2026,10/09/2026,Fri,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/05/2026,10/10/2026,Sat,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/05/2026,10/11/2026,Sun,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/12/2026,10/12/2026,Mon,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/12/2026,10/13/2026,Tue,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/12/2026,10/14/2026,Wed,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/12/2026,10/15/2026,Thu,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/12/2026,10/16/2026,Fri,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/12/2026,10/17/2026,Sat,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/12/2026,10/18/2026,Sun,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/19/2026,10/19/2026,Mon,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/19/2026,10/20/2026,Tue,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/19/2026,10/21/2026,Wed,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/19/2026,10/22/2026,Thu,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/19/2026,10/23/2026,Fri,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/19/2026,10/24/2026,Sat,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/19/2026,10/25/2026,Sun,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/26/2026,10/26/2026,Mon,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/26/2026,10/27/2026,Tue,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/26/2026,10/28/2026,Wed,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/26/2026,10/29/2026,Thu,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/26/2026,10/30/2026,Fri,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+10/01/2026,10/26/2026,10/31/2026,Sat,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,
+11/01/2026,10/26/2026,11/01/2026,Sun,ASR-AR,29,37,66,3,198,49%,4.85,10.10,873.18,"1,817.64",,`;
+
+    const $ = id => document.getElementById(id);
+    const n1 = n => new Intl.NumberFormat('en-US',{minimumFractionDigits:1,maximumFractionDigits:1}).format(n);
+    const n0 = n => new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(n);
+    const pct = n => `${Math.round((n||0)*100)}%`;
+
+    // Same line splitter as the original ledger — handles quoted "1,823"-style fields.
+    const csvLine = line => { let a=[],c='',q=false; for(let i=0;i<line.length;i++){const x=line[i];if(x==='"'){if(q&&line[i+1]==='"'){c+='"';i++}else q=!q}else if(x===','&&!q){a.push(c.trim());c=''}else c+=x}a.push(c.trim());return a };
+
+    function num(x){ if(x===undefined||x===null) return undefined; const s=String(x).trim(); if(s==='') return undefined; const isPct=/%$/.test(s); const n=Number(s.replace(/[",%\s]/g,'')); return Number.isFinite(n) ? (isPct ? n/100 : n) : undefined; }
+    function shortDate(s){ const m=String(s||'').match(/^(\d{1,2})[/-](\d{1,2})/); return m ? `${m[1]}/${m[2]}` : (s||''); }
+    // Active Headcount is always Nesting + Production — never read as a separate figure.
+    // If Production is missing but a raw Active Headcount column was given, back it out
+    // as Active - Nesting so the two stay consistent; otherwise fall back to fallbackHC.
+    function resolveHeadcount(row, fallbackHC){
+      const nestingHC = row.nestingHC ?? 0;
+      const productionHC = row.productionHC ?? Math.max(0, (row.activeHC ?? fallbackHC) - nestingHC);
+      return { nestingHC, productionHC, activeHC: nestingHC + productionHC };
+    }
+    function dateKey(s){
+      const str=String(s||'').trim();
+      let m=str.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})/);
+      if(m){ let [,mo,d,y]=m; if(y.length===2) y='20'+y; return `${y.padStart(4,'0')}-${mo.padStart(2,'0')}-${d.padStart(2,'0')}`; }
+      m=str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+      if(m){ let [,y,mo,d]=m; return `${y}-${mo.padStart(2,'0')}-${d.padStart(2,'0')}`; }
+      const t=Date.parse(str);
+      if(Number.isFinite(t)){ const dt=new Date(t); return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`; }
+      return str;
+    }
+    // Monday-of-the-week key ('YYYY-MM-DD') for a date string, used to bucket rows for
+    // the weekly view. Built from dateKey's own normalized output so it stays consistent
+    // with date-range filtering.
+    function weekStartKey(s){
+      const k = dateKey(s);
+      const m = k.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if(!m) return k;
+      const d = new Date(+m[1], +m[2]-1, +m[3]);
+      const day = d.getDay();
+      d.setDate(d.getDate() + (day===0 ? -6 : 1-day));
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    // Reads the real column names from the capacity CSV — Date, Day, Nesting/Production/
+    // Active Headcount, Total workload hours, and Labeller Workload % — with light
+    // synonym matching. Effective hours capacity and Cases are computed from these,
+    // not read as columns (see modelCapacity).
+    function parseCsv(text){
+      const lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+      if(lines.length<2) return [];
+      const h=csvLine(lines[0]).map(x=>x.toLowerCase().replace(/[^a-z0-9]/g,''));
+      const find=cands=>h.findIndex(x=>cands.includes(x));
+      const di=find(['date']), dayi=find(['day']),
+            nesti=find(['nestingheadcount','nestinghc']),
+            prodi=find(['productionheadcount','productionhc']),
+            activei=find(['activeheadcountlabellerchecker','activeheadcount','activehc']),
+            wli=find(['totalworkloadhours','workloadhours']),
+            lpcti=find(['labellerworkload','labellerworkloadpct','labellerpct']);
+      if(activei<0 && wli<0) return [];
+      return lines.slice(1).reduce((out,line,i)=>{
+        const f=csvLine(line);
+        out.push({
+          date: di>=0 ? f[di] : `Row ${i+1}`,
+          day: dayi>=0 ? f[dayi] : '',
+          nestingHC: nesti>=0 ? num(f[nesti]) : undefined,
+          productionHC: prodi>=0 ? num(f[prodi]) : undefined,
+          activeHC: activei>=0 ? num(f[activei]) : undefined,
+          workloadHours: wli>=0 ? num(f[wli]) : undefined,
+          labellerPct: lpcti>=0 ? num(f[lpcti]) : undefined,
+        });
+        return out;
+      },[]);
+    }
+
+    // Reads a forecast CSV — Date plus either separate Labeller/Checker Cases Forecast
+    // columns, or a single Total Cases column split by the Labeller case share lever.
+    function parseForecastCsv(text){
+      const lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+      if(lines.length<2) return [];
+      const h=csvLine(lines[0]).map(x=>x.toLowerCase().replace(/[^a-z0-9]/g,''));
+      const find=cands=>h.findIndex(x=>cands.includes(x));
+      const di=find(['date']), dayi=find(['day']),
+            lci=find(['labellercasesforecast','labellercases','forecastlabellercases']),
+            cci=find(['checkercasesforecast','checkercases','forecastcheckercases']),
+            ti=find(['forecastcases','totalforecastcases','cases','volume','forecastvolume','totalcases']);
+      if(lci<0 && cci<0 && ti<0) return [];
+      return lines.slice(1).reduce((out,line,i)=>{
+        const f=csvLine(line);
+        const labellerCases = lci>=0 ? num(f[lci]) : undefined;
+        const checkerCases = cci>=0 ? num(f[cci]) : undefined;
+        const totalCases = ti>=0 ? num(f[ti]) : undefined;
+        if(labellerCases===undefined && checkerCases===undefined && totalCases===undefined) return out;
+        out.push({ date: di>=0 ? f[di] : `Row ${i+1}`, day: dayi>=0 ? f[dayi] : '', labellerCases, checkerCases, totalCases });
+        return out;
+      },[]);
+    }
+
+    function buildIllustrativeForecast(planRows){
+      return planRows.map((x,i)=>{
+        const wk = (x.day==='Sat'||x.day==='Sun') ? .85 : 1;
+        const wave = 1 + .18*Math.sin(i/6.2);
+        const bump = (i%9===0) ? 220 : 0;
+        const total = Math.max(0, Math.round(2650*wk*wave + bump));
+        const labeller = Math.round(total*0.323);
+        return { date:x.date, day:x.day, labellerCases:labeller, checkerCases: total-labeller, totalCases: total };
+      });
+    }
+
+    let plan = parseCsv(DEFAULT_CSV);
+    let planIndex = {};
+    function rebuildPlanIndex(){ planIndex={}; plan.forEach(x=>{ planIndex[dateKey(x.date)] = x; }); }
+    rebuildPlanIndex();
+
+    // Date-range filter and Daily/Weekly granularity for the Cases Capacity page.
+    let dateFilter = { from: null, to: null };
+    let granularity = 'daily';
+    function updateDateBounds(){
+      const keys = plan.map(x=>dateKey(x.date)).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k)).sort();
+      if(!keys.length) return;
+      const min=keys[0], max=keys[keys.length-1];
+      ['dateFrom','dateTo'].forEach(id=>{ $(id).min=min; $(id).max=max; });
+    }
+    updateDateBounds();
+
+    let forecastIsIllustrative = true;
+    let forecastPlan = buildIllustrativeForecast(plan);
+
+    // ---------------------------- Page 1: Cases Capacity ----------------------------
+    function valuesCapacity(){
+      return {
+        secPerCase: Math.max(1, +$('secPerCase').value || 1),
+        labellerPct: Math.min(1, Math.max(0, (+$('labellerPct').value || 0)/100)),
+        labellerRatio: Math.max(0, +$('labellerRatio').value || 0),
+        checkerRatio: Math.max(0, +$('checkerRatio').value || 0),
+        rampPct: Math.min(1, Math.max(0, (+$('rampPct').value || 0)/100)),
+        shrinkage: Math.min(.95, Math.max(0, (+$('shrinkage').value || 0)/100)),
+        fallbackHC: Math.max(0, +$('fallbackHC').value || 0),
+        utilOverride: (() => { const raw=$('utilOverride').value; return raw.trim()==='' ? null : Math.min(1, Math.max(0, (+raw||0)/100)); })(),
+      };
+    }
+
+    // Labeller effective hours = (workload hours × Labeller Workload %) × (Labeller ratio ÷ 8).
+    // Checker effective hours uses the workload-hour complement and its own ratio ÷ 8.
+    // Cases = effective hours × 3600 ÷ effective seconds/case. Both are then scaled by
+    // today's headcount utilization — either derived from ramp + shrinkage (Effective HC ÷
+    // Active HC), or a fixed number if the Utilization override lever is set.
+    // Groups already-computed daily rows into Monday-start weeks for the Weekly view.
+    // Headcount/utilization columns are period averages; case columns are period totals —
+    // matching the #granularityNote copy shown when Weekly is active.
+    function aggregateWeekly(dailyRows){
+      const buckets = new Map();
+      dailyRows.forEach(r=>{
+        const key = weekStartKey(r.date);
+        if(!buckets.has(key)) buckets.set(key, []);
+        buckets.get(key).push(r);
+      });
+      return [...buckets.entries()].sort((a,b)=> a[0]<b[0]?-1:a[0]>b[0]?1:0).map(([key, group])=>{
+        const n = group.length;
+        const avg = k => group.reduce((s,x)=>s+x[k],0)/n;
+        const sum = k => group.reduce((s,x)=>s+x[k],0);
+        return {
+          date: group[0].date, dayCount: n,
+          label: `Wk of ${shortDate(group[0].date)}`,
+          nestingHC: avg('nestingHC'), productionHC: avg('productionHC'), activeHC: avg('activeHC'),
+          effectiveHC: avg('effectiveHC'), utilization: avg('utilization'),
+          labellerCases: sum('labellerCases'), checkerCases: sum('checkerCases'), totalCases: sum('totalCases'),
+        };
+      });
+    }
+
+    function modelCapacity(){
+      const v=valuesCapacity();
+      const filteredPlan = plan.filter(x=>{
+        const k = dateKey(x.date);
+        if(dateFilter.from && k < dateFilter.from) return false;
+        if(dateFilter.to && k > dateFilter.to) return false;
+        return true;
+      });
+      const dailyRows=filteredPlan.map(x=>{
+        const {nestingHC, productionHC, activeHC} = resolveHeadcount(x, v.fallbackHC);
+        const rawEffectiveHC=(productionHC + nestingHC*v.rampPct) * (1-v.shrinkage);
+        const utilization = v.utilOverride !== null ? v.utilOverride : (activeHC>0 ? rawEffectiveHC/activeHC : 1);
+        const effectiveHC = v.utilOverride !== null ? activeHC*utilization : rawEffectiveHC;
+        const workloadHours = x.workloadHours ?? 0;
+        const labellerPct = x.labellerPct ?? v.labellerPct;
+        const labellerWorkloadHours = workloadHours*labellerPct;
+        const checkerWorkloadHours = workloadHours*(1-labellerPct);
+        const labellerEffHours = labellerWorkloadHours*(v.labellerRatio/8);
+        const checkerEffHours = checkerWorkloadHours*(v.checkerRatio/8);
+        const nominalLabeller = (labellerEffHours*3600)/v.secPerCase;
+        const nominalChecker = (checkerEffHours*3600)/v.secPerCase;
+        const labellerCases = nominalLabeller*utilization;
+        const checkerCases = nominalChecker*utilization;
+        const totalCases = labellerCases+checkerCases;
+        return {...x, activeHC, nestingHC, productionHC, effectiveHC, utilization, workloadHours, labellerPct,
+          labellerEffHours, checkerEffHours, labellerCases, checkerCases, totalCases,
+          label:`${x.day||''} ${shortDate(x.date)}`.trim()};
+      });
+      const avg=k=>dailyRows.reduce((s,x)=>s+x[k],0)/(dailyRows.length||1);
+      const totalCasesSum=dailyRows.reduce((s,x)=>s+x.totalCases,0);
+      const displayRows = granularity==='weekly' ? aggregateWeekly(dailyRows) : dailyRows;
+      const worst=displayRows.reduce((a,x)=>!a||x.totalCases<a.totalCases?x:a,null);
+      return {rows:displayRows, dailyRows, v, avgActiveHC:avg('activeHC'), avgEffectiveHC:avg('effectiveHC'), avgUtil:avg('utilization'), totalCasesSum, worst};
+    }
+
+    function drawChart(canvas, rows, cfg){
+      const box=canvas.parentElement, ratio=window.devicePixelRatio||1, w=box.clientWidth, h=box.clientHeight;
+      if(!w||!h) return;
+      canvas.width=w*ratio; canvas.height=h*ratio; const c=canvas.getContext('2d'); c.scale(ratio,ratio); c.clearRect(0,0,w,h);
+      if(!rows.length) return;
+      const allVals = rows.flatMap(x=>[x[cfg.bar], ...cfg.lines.map(l=>x[l.key])]);
+      const max=Math.max(1,...allVals)*1.15;
+      const pad={l:34,r:8,t:18,b:34}, iw=w-pad.l-pad.r, ih=h-pad.t-pad.b, ys=n=>pad.t+ih-(n/max)*ih;
+      c.strokeStyle='#e0dbd0'; c.lineWidth=1; c.setLineDash([2,5]);
+      [0,.33,.66,1].forEach(p=>{let y=pad.t+ih*(1-p); c.beginPath(); c.moveTo(pad.l,y); c.lineTo(w-pad.r,y); c.stroke(); c.setLineDash([]); c.fillStyle='#788187'; c.font='10px Manrope'; c.textAlign='right'; c.fillText(n0(max*p), pad.l-6, y+3)});
+      const slot=iw/rows.length, bar=Math.min(24, slot*.58), showEvery=Math.max(1,Math.ceil(rows.length/12));
+      rows.forEach((x,i)=>{
+        let cx=pad.l+slot*i+slot/2, y=ys(x[cfg.bar]);
+        c.fillStyle='#1e4d68'; c.fillRect(cx-bar/2, y, bar, pad.t+ih-y);
+        if(i%showEvery===0){ c.fillStyle='#788187'; c.font='10px Manrope'; c.textAlign='center'; c.fillText(x[cfg.labelKey], cx, h-10); }
+      });
+      cfg.lines.forEach(l=>{
+        c.strokeStyle=l.color; c.lineWidth=2.4; c.setLineDash(l.dashed?[5,4]:[]); c.beginPath();
+        rows.forEach((x,i)=>{const px=pad.l+slot*i+slot/2, py=ys(x[l.key]); if(i) c.lineTo(px,py); else c.moveTo(px,py)});
+        c.stroke(); c.setLineDash([]);
+        rows.forEach((x,i)=>{const px=pad.l+slot*i+slot/2, py=ys(x[l.key]); c.fillStyle=l.color; c.beginPath(); c.arc(px,py,3.25,0,Math.PI*2); c.fill(); c.strokeStyle='#fbf9f4'; c.lineWidth=1.5; c.stroke()});
+      });
+    }
+
+    function renderCapacity(){
+      const p=modelCapacity(), w=p.worst, dayCount=p.dailyRows.length, perDay=p.totalCasesSum/(dayCount||1);
+      const periodWord = granularity==='weekly' ? 'week' : 'day';
+      $('heroCapacity').textContent = n0(perDay);
+      $('heroCopy').textContent = 'effective cases / day';
+      $('avgActiveHC').textContent = n1(p.avgActiveHC);
+      $('avgEffectiveHC').textContent = n1(p.avgEffectiveHC);
+      $('avgUtilization').textContent = pct(p.avgUtil);
+      $('avgTotalCases').textContent = n0(perDay);
+      $('assumptionCopy').textContent = `Labeller = workload hrs × ${Math.round(p.v.labellerPct*100)}% × (${n1(p.v.labellerRatio)}÷8); Checker = workload hrs × ${Math.round((1-p.v.labellerPct)*100)}% × (${n1(p.v.checkerRatio)}÷8); scaled by ${pct(p.avgUtil)} avg. utilization${p.v.utilOverride!==null ? ' (manual override)' : ' (auto, from ramp + shrinkage)'}.`;
+      $('watchLabel').textContent = `Lowest capacity ${periodWord}`;
+      $('watchResult').textContent = `${n0(w?.totalCases||0)} cases`;
+      $('watchAt').textContent = `Lowest total capacity at ${w?.label||'—'}`;
+      $('watchNestingHC').textContent = n1(w?.nestingHC||0);
+      $('watchProductionHC').textContent = n1(w?.productionHC||0);
+      $('watchActiveHC').textContent = n1(w?.activeHC||0);
+      $('watchEffectiveHC').textContent = n1(w?.effectiveHC||0);
+      $('watchUtilization').textContent = pct(w?.utilization||0);
+      $('watchLabellerCases').textContent = n0(w?.labellerCases||0);
+      $('watchCheckerCases').textContent = n0(w?.checkerCases||0);
+      $('watchTotalCases').textContent = n0(w?.totalCases||0);
+      $('watch').className = `watch ${p.avgUtil<0.85 ? '' : 'good'}`;
+      const r=$('rows');
+      r.innerHTML = p.rows.length ? p.rows.map(x=>`<div class="row cols-8"><span>${x.label}</span><span>${n1(x.nestingHC)}</span><span>${n1(x.productionHC)}</span><span>${n1(x.activeHC)}</span><span>${n1(x.effectiveHC)}</span><span>${n0(x.labellerCases)}</span><span>${n0(x.checkerCases)}</span><span>${n0(x.totalCases)}</span></div>`).join('')
+        : '<div class="row cols-8"><span>No data in the selected date range</span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>';
+      $('capTotal').textContent = n0(p.totalCasesSum);
+      $('capAvgEffective').textContent = `${n1(p.avgEffectiveHC)} HC`;
+      $('capCasesPerHC').textContent = n1(p.avgEffectiveHC>0 ? perDay/p.avgEffectiveHC : 0);
+      $('capFooterCount').textContent = granularity==='weekly' ? `${dayCount} days · ${p.rows.length} weeks evaluated` : `${dayCount} periods evaluated`;
+      $('granularityNote').hidden = granularity!=='weekly';
+      const low = p.avgUtil < 0.85;
+      $('statusTitle').textContent = low ? 'Ramping up' : 'Full capacity';
+      $('statusCopy').textContent = low ? `Only ${pct(p.avgUtil)} of scheduled headcount is production-ready today.` : 'Nearly all scheduled headcount is production-ready.';
+      $('statusMeter').style.width = `${Math.min(100,Math.max(12, p.avgUtil*100))}%`;
+      $('statusMeter').style.background = low ? '#e0b663' : '#7cbf98';
+      drawChart($('chart'), p.rows, {bar:'totalCases', labelKey:'label', lines:[{key:'labellerCases',color:'#c98a28',dashed:true},{key:'checkerCases',color:'#37795b',dashed:false}]});
+    }
+
+    // ---------------------------- Page 2: Staffing Forecast ----------------------------
+    function valuesStaffing(){
+      return {
+        hoursPerHC: Math.max(.05, +$('hoursPerHC2').value || .05),
+        secPerCase: Math.max(1, +$('secPerCase2').value || 1),
+        labellerShare: Math.min(1, Math.max(0, (+$('labellerShare2').value || 0)/100)),
+        rampPct: Math.min(1, Math.max(0, (+$('rampPct2').value || 0)/100)),
+        shrinkage: Math.min(.95, Math.max(0, (+$('shrinkage2').value || 0)/100)),
+        fallbackHC: Math.max(0, +$('fallbackHC2').value || 0),
+      };
+    }
+
+    function modelStaffing(){
+      const v=valuesStaffing();
+      const rows=forecastPlan.map(x=>{
+        let labellerCases=x.labellerCases, checkerCases=x.checkerCases;
+        if(labellerCases===undefined && checkerCases===undefined && x.totalCases!==undefined){
+          labellerCases = x.totalCases*v.labellerShare;
+          checkerCases = x.totalCases*(1-v.labellerShare);
+        }
+        labellerCases = labellerCases||0; checkerCases = checkerCases||0;
+        const totalCases = labellerCases+checkerCases;
+        const requiredHours = (totalCases*v.secPerCase)/3600;
+        const requiredHC = requiredHours/v.hoursPerHC;
+        const match = planIndex[dateKey(x.date)];
+        const {nestingHC, productionHC, activeHC} = match ? resolveHeadcount(match, v.fallbackHC) : {nestingHC:0, productionHC:v.fallbackHC, activeHC:v.fallbackHC};
+        const scheduledHC = activeHC*(1-v.shrinkage);
+        const actualHC = (productionHC + nestingHC*v.rampPct)*(1-v.shrinkage);
+        return {...x, labellerCases, checkerCases, totalCases, requiredHC, scheduledHC, actualHC,
+          scheduledVariance: scheduledHC-requiredHC, actualVariance: actualHC-requiredHC,
+          label:`${x.day||''} ${shortDate(x.date)}`.trim()};
+      });
+      const avg=k=>rows.reduce((s,x)=>s+x[k],0)/(rows.length||1);
+      const req=avg('requiredHC'), sched=avg('scheduledHC'), actual=avg('actualHC');
+      const totalCases=rows.reduce((s,x)=>s+x.totalCases,0);
+      const exposure=rows.reduce((a,x)=>!a||x.actualVariance<a.actualVariance?x:a,null);
+      return {rows, v, req, sched, actual, scheduledVariance:sched-req, actualVariance:actual-req, totalCases, exposure};
+    }
+
+    function renderStaffing(){
+      const p=modelStaffing(), bad=p.actualVariance<0, ex=p.exposure;
+      $('totalForecastCases').textContent = n0(p.totalCases);
+      $('forecastCount').textContent = `${p.rows.length} forecast records`;
+      $('avgRequiredHC').textContent = n1(p.req);
+      $('scheduledVarianceStaffing').textContent = `${p.scheduledVariance>=0?'+':'−'}${n1(Math.abs(p.scheduledVariance))}`;
+      $('actualVarianceStaffing').textContent = `${p.actualVariance>=0?'+':'−'}${n1(Math.abs(p.actualVariance))}`;
+      $('heroGapStaffing').textContent = `${n1(Math.abs(p.actualVariance))} HC`;
+      $('heroCopyStaffing').textContent = bad ? 'actual average shortfall' : 'actual average surplus';
+      $('fcTotalCases').textContent = n0(p.totalCases);
+      $('fcReqSched').textContent = `${n1(p.req)} / ${n1(p.sched)} HC`;
+      $('fcSignal').textContent = bad ? '⚠ Rebalance' : '✓ Covered';
+      $('watchStaffing').className = `watch ${ex?.actualVariance<0?'':'good'}`;
+      $('watchLabelStaffing').textContent = ex?.actualVariance<0 ? 'Actual exposure watch' : 'Actual coverage watch';
+      $('watchResultStaffing').textContent = `${ex?.actualVariance<0?'⚠':'✓'} ${n1(Math.abs(ex?.actualVariance||0))} HC`;
+      $('watchAtStaffing').textContent = `Actual ${ex?.actualVariance<0?'short':'surplus'} at ${ex?.label||'—'}`;
+      $('watchRequired').textContent = `${n1(ex?.requiredHC||0)} HC`;
+      $('watchScheduled').textContent = `${n1(ex?.scheduledHC||0)} HC`;
+      $('watchScheduledVariance').textContent = `${ex?.scheduledVariance>=0?'+':'−'}${n1(Math.abs(ex?.scheduledVariance||0))}`;
+      $('watchActual').textContent = `${n1(ex?.actualHC||0)} HC`;
+      $('watchActualVariance').textContent = `${ex?.actualVariance>=0?'+':'−'}${n1(Math.abs(ex?.actualVariance||0))}`;
+      const r=$('rowsStaffing');
+      r.innerHTML = p.rows.map(x=>`<div class="row"><span>${x.label}</span><span>${n0(x.totalCases)}</span><span>${n1(x.requiredHC)}</span><span>${n1(x.scheduledHC)}</span><span class="gap ${x.scheduledVariance<0?'bad':'good'}">${x.scheduledVariance>=0?'+':'−'}${n1(Math.abs(x.scheduledVariance))}</span><span>${n1(x.actualHC)}</span><span class="gap ${x.actualVariance<0?'bad':'good'}">${x.actualVariance>=0?'+':'−'}${n1(Math.abs(x.actualVariance))}</span></div>`).join('');
+      $('fcFooterCount').textContent = `${p.rows.length} periods evaluated`;
+      $('statusTitle').textContent = bad ? 'At risk' : 'Balanced';
+      $('statusCopy').textContent = bad ? 'Review the actual short periods before publishing the roster.' : 'Current actual coverage meets the modeled requirement.';
+      $('statusMeter').style.width = `${Math.min(100,Math.max(18, Math.abs(p.actualVariance)*3+30))}%`;
+      $('statusMeter').style.background = bad ? '#e0b663' : '#7cbf98';
+      drawChart($('chartStaffing'), p.rows, {bar:'requiredHC', labelKey:'label', lines:[{key:'scheduledHC',color:'#c98a28',dashed:true},{key:'actualHC',color:'#37795b',dashed:false}]});
+    }
+
+    // ---------------------------- View switching ----------------------------
+    function currentView(){ return $('view-capacity').hidden ? 'staffing' : 'capacity'; }
+    function setView(view){
+      $('view-capacity').hidden = view!=='capacity';
+      $('view-staffing').hidden = view!=='staffing';
+      document.querySelectorAll('nav a[data-view]').forEach(a=>a.classList.toggle('active', a.dataset.view===view));
+      if(view==='capacity') renderCapacity(); else renderStaffing();
+    }
+    document.querySelectorAll('nav a[data-view]').forEach(a=>a.addEventListener('click', ()=>setView(a.dataset.view)));
+    window.addEventListener('resize', ()=>{ currentView()==='capacity' ? renderCapacity() : renderStaffing(); });
+
+    // Reads a File as CSV text — .xlsx/.xls are converted (first sheet) via SheetJS,
+    // everything else is read as plain text. Lets the same parseCsv/parseForecastCsv
+    // logic handle both Excel and CSV uploads.
+    async function fileToCsvText(file){
+      const name = (file.name||'').toLowerCase();
+      const isExcel = name.endsWith('.xlsx') || name.endsWith('.xls') || /spreadsheetml|ms-excel/.test(file.type||'');
+      if(isExcel && window.XLSX){
+        const buf = await file.arrayBuffer();
+        const wb = XLSX.read(buf, {type:'array', cellDates:true});
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        return XLSX.utils.sheet_to_csv(sheet, {blankrows:false});
+      }
+      return await file.text();
+    }
+
+    // ============================================================================
+    // Live Google Sheets connection (private sheets via real Google sign-in — this
+    // page must be served over http/https, not opened as a file://, and its origin
+    // must be added as an Authorized JavaScript origin on the OAuth client below).
+    //
+    // Setup (one-time, ~5 min):
+    //   1. https://console.cloud.google.com/ → create/select a project.
+    //   2. APIs & Services → Library → enable "Google Sheets API".
+    //   3. APIs & Services → Credentials → Create Credentials → OAuth client ID
+    //      → Application type: Web application.
+    //   4. Under "Authorized JavaScript origins" add the URL this page is served
+    //      from (e.g. http://localhost:8934 while testing, https://<you>.github.io
+    //      once deployed). No path — origin only.
+    //   5. Paste the resulting Client ID below, replacing YOUR_CLIENT_ID.apps.googleusercontent.com
+    // ============================================================================
+    const GOOGLE_CLIENT_ID = '12743169686-uaaq7mlmrrcles8e4nrclvha0qoradtr.apps.googleusercontent.com';
+    const GOOGLE_SCOPE = 'https://www.googleapis.com/auth/spreadsheets.readonly';
+
+    let googleTokenClient = null;
+    let googleAccessToken = null;
+    let googleTokenExpiry = 0;
+    let googleTokenResolvers = [];
+    let sheetAutoRefreshTimer = null;
+
+    function setSheetStatus(msg){ $('sheetStatus').textContent = msg; }
+
+    function ensureGoogleTokenClient(){
+      if(googleTokenClient) return googleTokenClient;
+      if(!window.google || !google.accounts || !google.accounts.oauth2) return null;
+      googleTokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: GOOGLE_CLIENT_ID,
+        scope: GOOGLE_SCOPE,
+        callback: (resp) => {
+          if(resp.error){
+            setSheetStatus(`Sign-in failed: ${resp.error}`);
+            googleTokenResolvers.forEach(r=>r()); googleTokenResolvers=[];
+            return;
+          }
+          googleAccessToken = resp.access_token;
+          googleTokenExpiry = Date.now() + (resp.expires_in*1000 - 30000);
+          $('loadSheet').disabled = false;
+          $('autoRefresh').disabled = false;
+          setSheetStatus('Signed in — paste a Sheet URL and click Load.');
+          googleTokenResolvers.forEach(r=>r()); googleTokenResolvers=[];
+        },
+      });
+      return googleTokenClient;
+    }
+
+    // Resolves with a usable access token in googleAccessToken — silently renews an
+    // expired one if the viewer already granted consent, without re-prompting.
+    function ensureFreshGoogleToken(){
+      return new Promise(resolve=>{
+        if(googleAccessToken && Date.now() < googleTokenExpiry) return resolve();
+        const tc = ensureGoogleTokenClient();
+        if(!tc) return resolve();
+        googleTokenResolvers.push(resolve);
+        tc.requestAccessToken({ prompt: '' });
+      });
+    }
+
+    function parseSheetUrl(input){
+      const str = (input||'').trim();
+      const idMatch = str.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/) || str.match(/^([a-zA-Z0-9-_]{20,})$/);
+      const gidMatch = str.match(/[#&?]gid=(\d+)/);
+      return { id: idMatch ? idMatch[1] : null, gid: gidMatch ? gidMatch[1] : null };
+    }
+
+    function rowsToCsvText(rows){
+      return rows.map(row => row.map(cell => {
+        const s = String(cell ?? '');
+        return /[",\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s;
+      }).join(',')).join('\n');
+    }
+
+    // Reads the sheet's tab list to resolve a gid to its title (values.get needs a
+    // sheet name, not a gid), then pulls that tab's values and converts them to CSV
+    // text so the exact same parseCsv() used for uploads handles the column mapping.
+    async function fetchSheetAsCsv(sheetId, gid, token){
+      const metaResp = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.properties`, { headers:{ Authorization:`Bearer ${token}` } });
+      if(!metaResp.ok) throw new Error(`Could not read that sheet (${metaResp.status}). Check the URL and that your Google account has access.`);
+      const meta = await metaResp.json();
+      const sheets = meta.sheets || [];
+      let target = sheets[0];
+      if(gid){ const found = sheets.find(s=>String(s.properties.sheetId)===String(gid)); if(found) target = found; }
+      if(!target) throw new Error('That spreadsheet has no tabs.');
+      const range = encodeURIComponent(`'${target.properties.title}'!A1:Z2000`);
+      const valuesResp = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}`, { headers:{ Authorization:`Bearer ${token}` } });
+      if(!valuesResp.ok) throw new Error(`Could not read sheet values (${valuesResp.status}).`);
+      const data = await valuesResp.json();
+      return rowsToCsvText(data.values || []);
+    }
+
+    async function loadFromGoogleSheet(){
+      const {id, gid} = parseSheetUrl($('sheetUrl').value);
+      if(!id){ setSheetStatus('Paste a full Google Sheet URL first.'); return; }
+      await ensureFreshGoogleToken();
+      if(!googleAccessToken){ setSheetStatus('Not signed in.'); return; }
+      setSheetStatus('Loading…');
+      try{
+        const csv = await fetchSheetAsCsv(id, gid, googleAccessToken);
+        const rows = parseCsv(csv);
+        if(!rows.length){ setSheetStatus('Signed in, but no Date/Headcount/Workload columns were found in that sheet — check the tab and headers.'); return; }
+        plan = rows; rebuildPlanIndex(); updateDateBounds();
+        try{ localStorage.setItem('capacityLedgerSheetUrl', $('sheetUrl').value); }catch(e){}
+        $('fileName').textContent = 'Google Sheet (live)';
+        setSheetStatus(`Synced ${new Date().toLocaleTimeString()}.`);
+        if(forecastIsIllustrative) forecastPlan = buildIllustrativeForecast(plan);
+        renderCapacity();
+      }catch(err){
+        setSheetStatus(err.message || 'Failed to load the sheet.');
+      }
+    }
+
+    $('googleSignIn').onclick = () => {
+      if(GOOGLE_CLIENT_ID.startsWith('YOUR_CLIENT_ID')){ alert('Set GOOGLE_CLIENT_ID near the top of the <script> block first — see the setup comment right above it.'); return; }
+      const tc = ensureGoogleTokenClient();
+      if(!tc){ setSheetStatus('Google sign-in is still loading — try again in a moment.'); return; }
+      tc.requestAccessToken({ prompt: googleAccessToken ? '' : 'consent' });
+    };
+    $('loadSheet').addEventListener('click', loadFromGoogleSheet);
+    $('autoRefresh').addEventListener('change', ()=>{
+      if(sheetAutoRefreshTimer){ clearInterval(sheetAutoRefreshTimer); sheetAutoRefreshTimer=null; }
+      if($('autoRefresh').checked) sheetAutoRefreshTimer = setInterval(loadFromGoogleSheet, 5*60*1000);
+    });
+    try{ const savedSheetUrl = localStorage.getItem('capacityLedgerSheetUrl'); if(savedSheetUrl) $('sheetUrl').value = savedSheetUrl; }catch(e){}
+
+    // ---------------------------- Page 1 controls ----------------------------
+    ['labellerPct','labellerRatio','checkerRatio','secPerCase','rampPct','shrinkage','utilOverride','fallbackHC'].forEach(id=>$(id).addEventListener('input', renderCapacity));
+    $('dateFrom').addEventListener('change', ()=>{ dateFilter.from = $('dateFrom').value || null; renderCapacity(); });
+    $('dateTo').addEventListener('change', ()=>{ dateFilter.to = $('dateTo').value || null; renderCapacity(); });
+    $('clearRange').addEventListener('click', ()=>{ $('dateFrom').value=''; $('dateTo').value=''; dateFilter={from:null,to:null}; renderCapacity(); });
+    document.querySelectorAll('.viewtoggle .gbtn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        granularity = btn.dataset.granularity;
+        document.querySelectorAll('.viewtoggle .gbtn').forEach(b=>b.classList.toggle('active', b===btn));
+        renderCapacity();
+      });
+    });
+    $('upload').onclick=()=>$('file').click();
+    $('file').onchange=async e=>{
+      const file=e.target.files[0]; if(!file) return;
+      const rows=parseCsv(await fileToCsvText(file));
+      if(!rows.length){ alert('No headcount or workload columns were found. Use a CSV or Excel file with Date, Day, Nesting/Production/Active Headcount, Total workload hours, and Labeller Workload %.'); return }
+      plan=rows; rebuildPlanIndex(); updateDateBounds(); $('fileName').textContent=file.name;
+      if(forecastIsIllustrative) forecastPlan=buildIllustrativeForecast(plan);
+      renderCapacity();
+    };
+    $('template').onclick=()=>{
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(new Blob(['Date,Day,Nesting Headcount,Production Headcount,Active Headcount (Labeller-Checker),Total workload hours,Labeller Workload %\n8/31/2026,Mon,29,37,66,198,49%\n9/1/2026,Tue,29,37,66,198,49%\n'],{type:'text/csv'}));
+      a.download='capacity-ledger-headcount-template.csv'; a.click(); URL.revokeObjectURL(a.href);
+    };
+    $('reset').onclick=()=>{
+      plan=parseCsv(DEFAULT_CSV); rebuildPlanIndex(); updateDateBounds();
+      $('fileName').textContent='DAL Capacity Planv2 — Capacity-AR.csv';
+      $('labellerPct').value=49; $('labellerRatio').value=0.4; $('checkerRatio').value=0.8;
+      $('secPerCase').value=20; $('rampPct').value=0; $('shrinkage').value=0; $('utilOverride').value=''; $('fallbackHC').value=10;
+      $('dateFrom').value=''; $('dateTo').value=''; dateFilter={from:null,to:null};
+      granularity='daily'; document.querySelectorAll('.viewtoggle .gbtn').forEach(b=>b.classList.toggle('active', b.dataset.granularity==='daily'));
+      if(forecastIsIllustrative) forecastPlan=buildIllustrativeForecast(plan);
+      renderCapacity();
+    };
+
+    // ---------------------------- Page 2 controls ----------------------------
+    ['hoursPerHC2','secPerCase2','labellerShare2','rampPct2','shrinkage2','fallbackHC2'].forEach(id=>$(id).addEventListener('input', renderStaffing));
+    $('uploadForecast').onclick=()=>$('fileForecast').click();
+    $('fileForecast').onchange=async e=>{
+      const file=e.target.files[0]; if(!file) return;
+      const rows=parseForecastCsv(await fileToCsvText(file));
+      if(!rows.length){ alert('No forecast cases column was found. Use a CSV or Excel file with Date and either Labeller Cases Forecast + Checker Cases Forecast, or a single Forecast Cases column.'); return }
+      forecastPlan=rows; forecastIsIllustrative=false; $('fileNameForecast').textContent=file.name;
+      renderStaffing();
+    };
+    $('templateForecast').onclick=()=>{
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(new Blob(['Date,Labeller Cases Forecast,Checker Cases Forecast\n9/1/2026,900,1900\n9/2/2026,850,1750\n'],{type:'text/csv'}));
+      a.download='capacity-ledger-forecast-template.csv'; a.click(); URL.revokeObjectURL(a.href);
+    };
+    $('resetForecast').onclick=()=>{
+      forecastPlan=buildIllustrativeForecast(plan); forecastIsIllustrative=true;
+      $('fileNameForecast').textContent='Illustrative forecast — upload to replace';
+      $('hoursPerHC2').value=3; $('secPerCase2').value=20; $('labellerShare2').value=32;
+      $('rampPct2').value=0; $('shrinkage2').value=0; $('fallbackHC2').value=10;
+      renderStaffing();
+    };
+
+    setView('capacity');
+  </script>
+</body>
+</html>
